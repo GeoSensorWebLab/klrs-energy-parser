@@ -3,27 +3,27 @@
 $:.push('lib')
 
 require 'csv'
-require 'klrs_parser'
+require 'klrs_energy'
 
 # Read file args in order
 while !ARGV.empty? do
   ARGF.set_encoding('windows-1252:utf-8', {
     universal_newline: true
   })
-  parsed = KLRSParser::CSVParser.new(ARGF.file, timezone: "-07:00")
+  parsed = KLRSEnergy::Parser.new(ARGF.file, timezone: "-07:00")
 
   puts "File: #{ARGF.filename}"
-  puts "Columns: #{parsed.columns.count}"
+  puts "Columns: #{parsed.summary.columns.count}"
 
-  parsed.columns.each_with_index do |column, i|
-    puts "\tColumn #{i+1}: #{column.name}"
-    puts "\t\tunits: #{column.units}"
-    puts "\t\tstats: #{column.stats}"
-    puts "\t\treadings: #{column.data.count}"
-    if column.data[0]
-      puts "\t\tExample: #{column.data[0].time} #{column.data[0].value}"
-    end
-  end
+  # parsed.columns.each_with_index do |column, i|
+  #   puts "\tColumn #{i+1}: #{column.name}"
+  #   puts "\t\tunits: #{column.units}"
+  #   puts "\t\tstats: #{column.stats}"
+  #   puts "\t\treadings: #{column.data.count}"
+  #   if column.data[0]
+  #     puts "\t\tExample: #{column.data[0].time} #{column.data[0].value}"
+  #   end
+  # end
 
   ARGF.close
 end
