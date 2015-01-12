@@ -2,10 +2,10 @@ module DataService
   class Record
     require 'securerandom'
 
-    attr_reader :uid, :id, :reading, :datetime, :extra
+    attr_reader :uid, :id, :reading, :datetime, :extra, :date
     def initialize(date, value, extra = {})
       @uid = SecureRandom.hex(16)
-      @date = parse_date(date)
+      @date = parse_date(date.strip)
 
       @id = @date.to_time.utc.strftime('%Y-%m-%dT%H:%M:%S')
       @reading = value
@@ -14,10 +14,8 @@ module DataService
     end
 
     def parse_date(date)
-      if date =~ /\d+-\d+-\d+ \d{1,2}:\d{2}(\-|\+)\d+(:\d+)?(:\d+)?+/
-        DateTime.strptime(date, '%Y-%m-%d %H:%M%z')
-      elsif date =~ /\d+-\d+-\d+ \d{1,2}:\d{2}:\d{2}(\-|\+)\d+(:\d+)?(:\d+)?+/
-        DateTime.strptime(date, '%Y-%m-%d %H:%M:%S%z')
+      if date =~ /\d+\/\d+\/\d+ \d+:\d+:\d+ (AM|PM)?+/
+        DateTime.strptime(date, '%m/%d/%Y %l:%M:%S %p %z')
       else
         raise "Unknown date format: #{date}"
       end
