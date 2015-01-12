@@ -3,6 +3,8 @@
 $:.push('lib')
 
 require 'data_service'
+require 'digest'
+require 'fileutils'
 require 'json'
 require 'klrs_energy'
 
@@ -11,27 +13,37 @@ while !ARGV.empty? do
   ARGF.set_encoding('windows-1252:utf-8', {
     universal_newline: true
   })
+  puts "Parsing input…"
   parsed = KLRSEnergy::Parser.new(ARGF.file, timezone: "-07:00")
+  puts "Done."
+
+  FileUtils.mkdir 'output' unless Dir.exists?('output')
 
   # Output a datastream JSON for each column
+  puts "Writing datastreams…"
   parsed.summary.columns[2..-1].each do |column|
     ds = DataService::Datastream.new(column.name, column.units, column.name)
-    File.open("#{column.name}-datastream.json", 'w') do |f|
+    column_hash = Digest::MD5.hexdigest(column.name)
+    File.open("output/#{column_hash}-datastream.json", 'w') do |f|
       f.write JSON.pretty_generate(ds.to_hash)
     end
   end
+  puts "Done."
 
   # Output a JSON array of records for each column
-  parsed.columns[2..-1].each do |column|
+  puts "Writing records…"
+  parsed.summary.columns[2..-1].each do |column|
     records = column.data.map do |time_value|
       DataService::Record.new(time_value.time, time_value.value)
     end
 
-    start = column.data.first.timestamp
-    File.open("datastream-#{column.name}-#{start}.json", 'w') do |f|
+    column_hash = Digest::MD5.hexdigest(column.name)
+    start = records.first.date.iso8601 if records.first
+    File.open("output/#{column_hash}-#{start}.json", 'w') do |f|
       f.write JSON.pretty_generate(records.map(&:to_hash))
     end
   end
+  puts "Done."
 
   ARGF.close
 end
