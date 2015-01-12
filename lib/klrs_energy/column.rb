@@ -1,7 +1,7 @@
 module KLRSEnergy
   # Column is a set of data for a specific observed property.
   class Column
-    attr_reader :columns
+    attr_accessor :data, :name, :units
 
     def initialize(name, units = "")
       @name = name

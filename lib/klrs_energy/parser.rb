@@ -9,7 +9,7 @@ module KLRSEnergy
     def initialize(file, timezone)
       Spreadsheet.client_encoding = 'UTF-8'
       book = Spreadsheet.open(file)
-      @summary = Summary.new(book.worksheet 'Summary')
+      @summary = Summary.new(book.worksheet('Summary'), timezone)
     end
   end
 end
