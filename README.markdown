@@ -10,7 +10,7 @@ Install Ruby, preferably Ruby 2.1.4 or newer. Next you can convert the data to J
 
     $ bin/convert data/gen_april.xls
 
-This will create a set of JSON files in the current directory. One JSON file for each column (except TIMESTAMP column), and one JSON file for the records in each column.
+This will create a set of JSON files in the `output` directory. One JSON file for each column (except TIMESTAMP column), and one JSON file for the records in each column. Files are named after the hash digest of the column name, to prevent invalid file names from special characters.
 
 The datastream JSON files can be fed into `node-dataservice`:
 
