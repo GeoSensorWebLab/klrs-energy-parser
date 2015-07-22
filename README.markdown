@@ -19,4 +19,8 @@ The datastream JSON files can be fed into `node-dataservice`:
 
 ## License
 
-All rights reserved, GeoSensorWeb Lab.
+MIT License
+
+## Author
+
+James Badger <jpbadger@ucalgary.ca>
